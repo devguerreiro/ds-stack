@@ -1,19 +1,40 @@
-from linked_list import LinkedList
+from typing import TypeVar
+
+TNode = TypeVar("TNode", bound="Node")
+
+
+class Node:
+    value: int
+    next: TNode | None = None
+
+    def __init__(self, value: int):
+        self.value = value
 
 
 class Stack:
-    linked_list: LinkedList = LinkedList()
+    _last: Node | None = None
+    _size: int = 0
 
-    def __len__(self):
-        return len(self.linked_list)
-
-    def add(self, value: int):
-        self.linked_list.insert(0, value)
+    def push(self, value: int):
+        new_node = Node(value)
+        new_node.next = self._last
+        self._last = new_node
+        self._size += 1
 
     def pop(self):
-        value = self.linked_list[0]
-        if self.linked_list.remove(value):
-            return value
+        if self._size > 0:
+            last = self._last
+            self._last = last.next
+            last.next = None
+            self._size -= 1
+            return last.value
+        raise IndexError()
+
+    def peek(self):
+        return self._last.value
+
+    def __len__(self):
+        return self._size
 
 
 if __name__ == "__main__":
@@ -25,9 +46,11 @@ if __name__ == "__main__":
     except IndexError as e:
         assert isinstance(e, IndexError)
 
-    stack.add(10)
-    stack.add(20)
-    stack.add(30)
+    stack.push(10)
+    stack.push(20)
+    stack.push(30)
+
+    assert stack.peek() == 30
 
     assert len(stack) == 3
 
