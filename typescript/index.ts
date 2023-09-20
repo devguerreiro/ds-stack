@@ -1,35 +1,54 @@
 import assert from "assert";
 
-import LinkedList from "./LinkedList";
+class Node {
+    value: number;
+    next: Node | null = null;
 
-namespace NSStack {
-    export class Stack {
-        stack = new LinkedList();
-
-        add(value: number) {
-            this.stack.insert(0, value);
-        }
-
-        pop() {
-            const value = this.stack.get(0);
-            if (this.stack.remove(value)) {
-                return value;
-            }
-        }
-
-        get length(): number {
-            return this.stack.length;
-        }
+    constructor(value: number) {
+        this.value = value;
     }
 }
 
-const stack = new NSStack.Stack();
+class Stack {
+    private last: Node | null = null;
+    private size: number = 0;
+
+    push(value: number) {
+        const newNode = new Node(value);
+        newNode.next = this.last;
+        this.last = newNode;
+        this.size++;
+    }
+
+    pop() {
+        if (this.size > 0) {
+            const last = this.last as Node;
+            this.last = last.next;
+            last.next = null;
+            this.size--;
+            return last.value;
+        }
+        throw new RangeError();
+    }
+
+    peek() {
+        return this.last?.value;
+    }
+
+    get length(): number {
+        return this.size;
+    }
+}
+
+const stack = new Stack();
 
 assert.throws(() => stack.pop(), Error);
 
-stack.add(10);
-stack.add(20);
-stack.add(30);
+stack.push(10);
+stack.push(20);
+stack.push(30);
+
+assert.equal(stack.peek(), 30);
 
 assert.equal(stack.length, 3);
 
