@@ -1,10 +1,10 @@
 import assert from "assert";
 
-import { NSLinkedList } from "./LinkedList";
+import LinkedList from "./LinkedList";
 
 namespace NSStack {
     export class Stack {
-        stack = new NSLinkedList.LinkedList();
+        stack = new LinkedList();
 
         add(value: number) {
             this.stack.insert(0, value);
